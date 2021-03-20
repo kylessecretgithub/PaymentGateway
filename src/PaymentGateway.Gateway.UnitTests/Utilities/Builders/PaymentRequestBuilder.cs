@@ -15,7 +15,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
                 CVV = 222,
                 ExpiryMonth = 10,
                 ExpiryYear = 2030,
-                MerchantId = Guid.NewGuid()
+                MerchantId = Guid.Parse("10247758-5c1f-4afb-ac43-a94d2a9e5fae")                
             };
         }
     }

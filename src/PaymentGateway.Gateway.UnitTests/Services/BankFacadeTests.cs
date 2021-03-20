@@ -100,9 +100,14 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void Returns_null()
+            public void BankResponse_has_only_failed_status_populated()
             {
-                Assert.That(response, Is.EqualTo(null));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(response.Status, Is.EqualTo("Failed"), "Status not populated with expected value");
+                    Assert.That(response.DetailedMessage, Is.Null, "Detailed Message not populated with expected value");
+                    Assert.That(response.PaymentId, Is.Null, "Detailed Message not populated with expected value");
+                });
             }
         }
 
@@ -122,9 +127,14 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void Returns_null()
+            public void BankResponse_has_only_failed_status_populated()
             {
-                Assert.That(response, Is.EqualTo(null));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(response.Status, Is.EqualTo("Failed"), "Status not populated with expected value");
+                    Assert.That(response.DetailedMessage, Is.Null, "Detailed Message not populated with expected value");
+                    Assert.That(response.PaymentId, Is.Null, "Detailed Message not populated with expected value");
+                });
             }
         }
     }

@@ -34,18 +34,16 @@ namespace PaymentGateway.Gateway.Services
                 }
                 catch (Exception e)
                 {
-                    return null;
+                    return new BankResponse("Failed");
                 }
             }
-            else
+            if (response.Content != null)
             {
-                if (response.Content != null)
-                {
-                    string errorJson = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<BankResponse>(errorJson);
-                }
-                return null;
+                string errorJson = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<BankResponse>(errorJson);
             }
+            return new BankResponse("Failed");
         }
+
     }
 }

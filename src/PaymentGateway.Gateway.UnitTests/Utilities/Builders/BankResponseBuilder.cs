@@ -20,6 +20,16 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
                 });
         }
 
+        public BankResponse Build()
+        {
+            return new BankResponse
+            {
+                PaymentId = paymentId,
+                Status = status,
+                DetailedMessage = detailedMessage
+            };
+        }
+
         internal BankResponseBuilder WithDetailedMessage(string detailedMessage)
         {
             this.detailedMessage = detailedMessage;
