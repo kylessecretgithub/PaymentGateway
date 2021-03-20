@@ -15,7 +15,10 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="DataAccess\" />
-    <Folder Include="Utilities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PaymentGateway.Gateway\PaymentGateway.Gateway.csproj" />
   </ItemGroup>
 
 </Project>

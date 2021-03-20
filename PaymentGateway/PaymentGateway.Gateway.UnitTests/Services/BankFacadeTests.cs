@@ -43,7 +43,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(response.DetailedMessage, Is.EqualTo("detailed message"), "Detailed Message not populated with expected value");
+                    Assert.That(response.DetailedMessage, Is.EqualTo("Processed payment sucessfully"), "Detailed Message not populated with expected value");
                     Assert.That(response.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(response.PaymentId, Is.EqualTo(1), "PaymentId not populated with expected value");
                 });
@@ -76,8 +76,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(response.DetailedMessage, Is.EqualTo("detailed message"), "Detailed Message not populated with expected value");
-                    Assert.That(response.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
+                    Assert.That(response.DetailedMessage, Is.EqualTo("unable to find merchant"), "Detailed Message not populated with expected value");
+                    Assert.That(response.Status, Is.EqualTo("merchant not recognised"), "Status not populated with expected value");
                 });
             }
         }
