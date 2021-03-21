@@ -10,9 +10,6 @@
         }
 
         public int? PaymentId { get; private set; }
-
         public string Status { get; private set; }
-
-
     }
 }
