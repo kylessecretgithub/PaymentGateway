@@ -13,7 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PaymentGateway.Gateway.UnitTests.Controllers
+namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
 {
     public class PaymentControllerTests
     {

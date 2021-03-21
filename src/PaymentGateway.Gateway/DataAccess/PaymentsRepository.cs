@@ -19,13 +19,13 @@ namespace PaymentGateway.Gateway.DataAccess
         {
             var payment = new PaymentEntity
             {
-                Amount = paymentRequest.Amount,
-                CardNumber = paymentRequest.CardNumber,
+                Amount = paymentRequest.Amount.Value,
+                CardNumber = paymentRequest.CardNumber.Value,
                 CurrencyISOCode = paymentRequest.CurrencyISOCode,
-                CVV = paymentRequest.CVV,
-                ExpiryMonth = paymentRequest.ExpiryMonth,
-                ExpiryYear = paymentRequest.ExpiryYear,
-                MerchantId = paymentRequest.MerchantId,
+                CVV = paymentRequest.CVV.Value,
+                ExpiryMonth = paymentRequest.ExpiryMonth.Value,
+                ExpiryYear = paymentRequest.ExpiryYear.Value,
+                MerchantId = paymentRequest.MerchantId.Value,
                 BankPaymentId = bankResponse.PaymentId,
                 Status = bankResponse.Status
             };
