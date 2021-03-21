@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using PaymentGateway.Gateway.DataAccess;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway
 {
@@ -13,7 +10,19 @@ namespace PaymentGateway.Gateway
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            IHost host = CreateHostBuilder(args).Build();
+            using IServiceScope scope = host.Services.CreateScope();
+            IServiceProvider services = scope.ServiceProvider;
+            PaymentGatewayContext context = services.GetService<PaymentGatewayContext>();
+            try
+            {
+                context.Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
