@@ -23,5 +23,16 @@ namespace PaymentGateway.Gateway.Services
             }
             return null;
         }
+
+        public async Task<Payment> GetPaymentAsync(int paymentId)
+        {
+            Payment payment = await paymentsRepository.GetPaymentAsync(paymentId);
+            if (payment == null)
+            {
+                return null;
+            }
+            payment.MaskCardNumber();
+            return payment;            
+        }
     }
 }

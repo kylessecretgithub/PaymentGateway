@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
 using System.Threading.Tasks;
@@ -12,7 +13,6 @@ namespace PaymentGateway.Gateway.UnitTests.Services
     {
         protected PaymentGatewayContext context;
         protected ReportingService reportingService;
-        protected PaymentsRepository paymentsRepository;
         protected DbContextOptionsBuilder<PaymentGatewayContext> optionsBuilder;
         private SqliteConnection connection;
 
@@ -28,7 +28,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                 paymentGatewayContext.Database.EnsureCreated();
             }
             context = new PaymentGatewayContext(optionsBuilder.Options);
-            paymentsRepository = new PaymentsRepository(context);
+            var paymentsRepository = new PaymentsRepository(context);
             reportingService = new ReportingService(paymentsRepository);
         }
 
@@ -79,5 +79,49 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
         }
 
+        [TestFixture]
+        internal class GetPaymentAsync_PaymentInDatabase : ReportingServiceTests
+        {
+            private Payment payment;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                await context.AddAsync(new PaymentEntityBuilder().Build());
+                await context.SaveChangesAsync();
+                payment = await reportingService.GetPaymentAsync(1);
+            }
+
+            [Test]
+            public void Payment_returned()
+            {
+                Assert.That(payment, Is.Not.Null);
+            }
+
+            [Test]
+            public void CardNumber_is_masked()
+            {
+                Assert.That(payment.CardNumber, Is.EqualTo(123));
+            }
+        }
+
+
+        [TestFixture]
+        internal class GetPaymentAsync_NoMatchingPaymentInDatabase : ReportingServiceTests
+        {
+            private Payment payment;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                payment = await reportingService.GetPaymentAsync(1);
+            }
+
+            [Test]
+            public void Null_returned()
+            {
+                Assert.That(payment, Is.Null);
+            }
+        }
     }
 }

@@ -13,5 +13,14 @@ namespace PaymentGateway.Gateway.Models
         public Guid? MerchantId { get; set; }
         public long? BankPaymentId { get; set; }
         public string Status { get; set; }
+
+        public void MaskCardNumber()
+        {
+            string cardNumer = CardNumber.ToString();
+            if (cardNumer.Length > 2)
+            {
+                CardNumber = int.Parse(cardNumer.Substring(0, 3));
+            }
+        }
     }
 }
