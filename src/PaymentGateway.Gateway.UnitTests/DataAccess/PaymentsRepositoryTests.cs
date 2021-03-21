@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Models.Entities;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
 using System;
@@ -92,7 +93,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             public async Task SetUp()
             {
                 await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 paymentEntity = await context.Payments.SingleAsync();
             }
 
@@ -112,6 +113,75 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
                     Assert.That(paymentEntity.MerchantId, Is.EqualTo(Guid.Parse("10247758-5c1f-4afb-ac43-a94d2a9e5fae")), "MerchantId not populated with expected value");
                     Assert.That(paymentEntity.Created, Is.Not.Null, "Creates is not populated");
                 });
+            }
+        }
+
+        [TestFixture]
+        public class GetPaymentAsync_PaymentInDatabase : PaymentsRepositoryTests
+        {
+            private Payment payment;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                await context.AddAsync(new PaymentEntityBuilder().Build());
+                await context.SaveChangesAsync();
+                payment = await paymentsRepository.GetPaymentAsync(1);
+            }
+
+            [Test]
+            public void Payment_retrieved_with_properties_populated()
+            {
+                Assert.Multiple(() =>
+                {
+                    Assert.That(payment.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
+                    Assert.That(payment.BankPaymentId, Is.EqualTo(123), "BankPaymentId not populated with expected value");
+                    Assert.That(payment.Amount, Is.EqualTo(100), "Amount not populated with expected value");
+                    Assert.That(payment.CardNumber, Is.EqualTo(1231231), "CardNumber not populated with expected value");
+                    Assert.That(payment.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
+                    Assert.That(payment.CVV, Is.EqualTo(222), "CVV not populated with expected value");
+                    Assert.That(payment.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");
+                    Assert.That(payment.ExpiryYear, Is.EqualTo(2030), "ExpiryYear not populated with expected value");
+                    Assert.That(payment.MerchantId, Is.EqualTo(Guid.Parse("10247758-5c1f-4afb-ac43-a94d2a9e5fae")), "MerchantId not populated with expected value");
+                });
+            }
+        }
+
+        [TestFixture]
+        public class GetPaymentAsync_EmptyDatabase : PaymentsRepositoryTests
+        {
+            private Payment payment;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                payment = await paymentsRepository.GetPaymentAsync(1);
+            }
+
+            [Test]
+            public void Payment_is_null()
+            {
+                Assert.That(payment, Is.Null);
+            }
+        }
+
+        [TestFixture]
+        public class GetPaymentAsync_NoMatchingEntity : PaymentsRepositoryTests
+        {
+            private Payment payment;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                await context.AddAsync(new PaymentEntityBuilder().Build());
+                await context.SaveChangesAsync();
+                payment = await paymentsRepository.GetPaymentAsync(10000000);
+            }
+
+            [Test]
+            public void Payment_is_null()
+            {
+                Assert.That(payment, Is.Null);
             }
         }
     }

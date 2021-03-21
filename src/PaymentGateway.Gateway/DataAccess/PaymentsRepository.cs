@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Models.Entities;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.DataAccess
@@ -30,6 +31,25 @@ namespace PaymentGateway.Gateway.DataAccess
                 Status = bankResponse.Status
             };
             return await dbContext.AddAsync(payment);
+        }
+
+        public async Task<Payment> GetPaymentAsync(int paymentRequestId)
+        {            
+            return await dbContext.Payments
+                .Where(p => p.PaymentId == paymentRequestId)
+                .Select(pe => new Payment 
+                {
+                    Amount = pe.Amount,
+                    CardNumber = pe.CardNumber,
+                    CurrencyISOCode = pe.CurrencyISOCode,
+                    CVV = pe.CVV,
+                    ExpiryMonth = pe.ExpiryMonth,
+                    ExpiryYear = pe.ExpiryYear,
+                    MerchantId = pe.MerchantId,                
+                    BankPaymentId = pe.BankPaymentId,
+                    Status = pe.Status
+                })
+                .SingleOrDefaultAsync();
         }
 
         public async Task<bool> SaveChangesAsync()
