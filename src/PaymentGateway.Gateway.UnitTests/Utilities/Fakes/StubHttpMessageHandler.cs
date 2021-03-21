@@ -10,7 +10,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Fakes
     {
         private readonly Dictionary<string, HttpResponseMessage> cannedAnswers;
 
-        public StubHttpMessageHandler(Dictionary<string, HttpResponseMessage> cannedAnswers)
+        internal StubHttpMessageHandler(Dictionary<string, HttpResponseMessage> cannedAnswers)
         {
             this.cannedAnswers = cannedAnswers;
         }

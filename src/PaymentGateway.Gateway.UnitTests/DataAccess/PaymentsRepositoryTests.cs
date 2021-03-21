@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.UnitTests.DataAccess
 {
-    public class PaymentsRepositoryTests
+    internal class PaymentsRepositoryTests
     {
         protected PaymentGatewayContext context;
         protected PaymentsRepository paymentsRepository;
@@ -20,7 +20,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         private SqliteConnection connection;
 
         [SetUp]
-        public void BaseSetUp()
+        internal void BaseSetUp()
         {
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -35,7 +35,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
 
         [TearDown]
-        public async Task BaseTearDown()
+        internal async Task BaseTearDown()
         {
             using (var paymentGatewayContext = new PaymentGatewayContext(optionsBuilder.Options))
             {
@@ -45,7 +45,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
 
         [TestFixture]
-        public class SaveChangesAsync_ChangesAreSaved : PaymentsRepositoryTests
+        internal class SaveChangesAsync_ChangesAreSaved : PaymentsRepositoryTests
         {
             private bool saved;
 
@@ -63,7 +63,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
 
         [TestFixture]
-        public class SaveChangesAsync_ExceptionSavingChanges : PaymentsRepositoryTests
+        internal class SaveChangesAsync_ExceptionSavingChanges : PaymentsRepositoryTests
         {
             private bool saved;
             private PaymentsRepository repo;
@@ -85,7 +85,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
     
         [TestFixture]
-        public class AddPaymentAsync_PaymentAddedToDbContext : PaymentsRepositoryTests
+        internal class AddPaymentAsync_PaymentAddedToDbContext : PaymentsRepositoryTests
         {
             private PaymentEntity paymentEntity;
 
@@ -117,12 +117,12 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
 
         [TestFixture]
-        public class GetPaymentAsync_PaymentInDatabase : PaymentsRepositoryTests
+        internal class GetPaymentAsync_PaymentInDatabase : PaymentsRepositoryTests
         {
             private Payment payment;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 await context.AddAsync(new PaymentEntityBuilder().Build());
                 await context.SaveChangesAsync();
@@ -130,7 +130,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             }
 
             [Test]
-            public void Payment_retrieved_with_properties_populated()
+            internal void Payment_retrieved_with_properties_populated()
             {
                 Assert.Multiple(() =>
                 {
@@ -148,30 +148,30 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
 
         [TestFixture]
-        public class GetPaymentAsync_EmptyDatabase : PaymentsRepositoryTests
+        internal class GetPaymentAsync_EmptyDatabase : PaymentsRepositoryTests
         {
             private Payment payment;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 payment = await paymentsRepository.GetPaymentAsync(1);
             }
 
             [Test]
-            public void Payment_is_null()
+            internal void Payment_is_null()
             {
                 Assert.That(payment, Is.Null);
             }
         }
 
         [TestFixture]
-        public class GetPaymentAsync_NoMatchingEntity : PaymentsRepositoryTests
+        internal class GetPaymentAsync_NoMatchingEntity : PaymentsRepositoryTests
         {
             private Payment payment;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 await context.AddAsync(new PaymentEntityBuilder().Build());
                 await context.SaveChangesAsync();
@@ -179,7 +179,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             }
 
             [Test]
-            public void Payment_is_null()
+            internal void Payment_is_null()
             {
                 Assert.That(payment, Is.Null);
             }

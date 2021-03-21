@@ -6,7 +6,7 @@ namespace PaymentGateway.Gateway.UnitTests.Models
     internal class PaymentTests
     {
         [Test]
-        public void CardNumber_is_masked()
+        internal void CardNumber_is_masked()
         {
             var payment = new Payment
             {
@@ -18,7 +18,7 @@ namespace PaymentGateway.Gateway.UnitTests.Models
         }
 
         [Test]
-        public void CardNumber_not_enough_length_to_bemasked()
+        internal void CardNumber_not_enough_length_to_bemasked()
         {
             var payment = new Payment
             {
@@ -30,7 +30,7 @@ namespace PaymentGateway.Gateway.UnitTests.Models
         }
 
         [Test]
-        public void CardNumber_Is_Null()
+        internal void CardNumber_Is_Null()
         {
             var payment = new Payment();
             payment.MaskCardNumber();

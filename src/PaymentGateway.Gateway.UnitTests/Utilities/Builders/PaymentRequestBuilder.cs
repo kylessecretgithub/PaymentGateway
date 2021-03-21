@@ -6,7 +6,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
     internal class PaymentRequestBuilder
     {
         private string currencyISOCode = "WOW";
-        public PaymentRequest Build()
+        internal PaymentRequest Build()
         {
             return new PaymentRequest
             {
@@ -20,7 +20,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
             };
         }
 
-        public PaymentRequestBuilder WithCurrencyISOCode(string code)
+        internal PaymentRequestBuilder WithCurrencyISOCode(string code)
         {
             currencyISOCode = code;
             return this;

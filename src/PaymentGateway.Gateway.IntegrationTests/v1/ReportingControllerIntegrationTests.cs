@@ -6,22 +6,20 @@ using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.IntegrationTests.Utilities.Builders;
 using PaymentGateway.Gateway.IntegrationTests.Utilities.Fakes;
 using PaymentGateway.Gateway.Services;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.IntegrationTests.v1
 {
-    public class ReportingControllerIntegrationTests
+    internal class ReportingControllerIntegrationTests
     {
         protected HttpClient testingClient;
         private WebApplicationFactory<Startup> webApplicationFactory;
 
         [SetUp]
-        public async Task BaseSetUp()
+        internal async Task BaseSetUp()
         {
             var bankResponseMessage = new HttpResponseMessageBuilder().WithJsonContent(new BankResponseBuilder().BuildJson()).Build();
             var stubbedResponses = new Dictionary<string, HttpResponseMessage>
@@ -43,7 +41,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         }
 
         [TearDown]
-        public async Task BaseTearDown()
+        internal async Task BaseTearDown()
         {
             using IServiceScope scope = webApplicationFactory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<PaymentGatewayContext>();
@@ -61,7 +59,6 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
                 Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             }
         }
-
 
         internal class Get_GetPayment_PaymentRetrievedFromDatabase : ReportingControllerIntegrationTests
         {

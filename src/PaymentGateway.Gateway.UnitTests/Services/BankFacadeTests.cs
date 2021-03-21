@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.UnitTests.Services
 {
-    public class BankFacadeTests
+    internal class BankFacadeTests
     {
         protected BankFacade bankFacade;
         protected Dictionary<string, HttpResponseMessage> stubbedResponses;
 
         [SetUp]
-        public void BaseSetUp()
+        internal void BaseSetUp()
         {
             var okBankHttpResponse = new HttpResponseMessageBuilder().WithJsonContent(new BankResponseBuilder().BuildJson()).Build();
             stubbedResponses = new Dictionary<string, HttpResponseMessage>
@@ -33,13 +33,13 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             private BankResponse response;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
             [Test]
-            public void BankResponse_has_properties_populated()
+            internal void BankResponse_has_properties_populated()
             {
                 Assert.Multiple(() =>
                 {
@@ -56,7 +56,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             private BankResponse response;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 var errorBankResponse = new BankResponseBuilder()
                     .WithDetailedMessage("unable to find merchant")
@@ -72,7 +72,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void BankResponse_has_properties_populated()
+            internal void BankResponse_has_properties_populated()
             {
                 Assert.Multiple(() =>
                 {
@@ -89,7 +89,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             private BankResponse response;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 var badResponse = new HttpResponseMessageBuilder()
                     .WithHttpStatusCode(HttpStatusCode.OK)
@@ -100,7 +100,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void BankResponse_has_only_failed_status_populated()
+            internal void BankResponse_has_only_failed_status_populated()
             {
                 Assert.Multiple(() =>
                 {
@@ -118,7 +118,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             private BankResponse response;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 var badResponse = new HttpResponseMessageBuilder()
                     .WithHttpStatusCode(HttpStatusCode.BadRequest)
@@ -129,7 +129,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void BankResponse_has_only_failed_status_populated()
+            internal void BankResponse_has_only_failed_status_populated()
             {
                 Assert.Multiple(() =>
                 {
@@ -146,7 +146,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             private BankResponse response;
 
             [SetUp]
-            public async Task SetUp()
+            internal async Task SetUp()
             {
                 var badResponse = new HttpResponseMessageBuilder()
                     .WithHttpStatusCode(HttpStatusCode.BadRequest)
@@ -156,7 +156,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
 
             [Test]
-            public void BankResponse_has_only_failed_status_populated()
+            internal void BankResponse_has_only_failed_status_populated()
             {
                 Assert.Multiple(() =>
                 {

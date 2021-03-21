@@ -9,7 +9,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
         private string detailedMessage = "Processed payment sucessfully";
         private long? paymentId = 1;
 
-        public string BuildJson()
+        internal string BuildJson()
         {
             return JsonConvert.SerializeObject(
                 new BankResponse
@@ -20,7 +20,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
                 });
         }
 
-        public BankResponse Build()
+        internal BankResponse Build()
         {
             return new BankResponse
             {

@@ -6,7 +6,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
 {
     internal class PaymentEntityBuilder
     {
-        public PaymentEntity Build()
+        internal PaymentEntity Build()
         {
             return new PaymentEntity
             {
