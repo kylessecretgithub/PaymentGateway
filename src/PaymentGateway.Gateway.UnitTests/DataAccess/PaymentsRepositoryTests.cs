@@ -84,14 +84,14 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         }
     
         [TestFixture]
-        public class AddPayment_PaymentAddedToDbContext : PaymentsRepositoryTests
+        public class AddPaymentAsync_PaymentAddedToDbContext : PaymentsRepositoryTests
         {
             private PaymentEntity paymentEntity;
 
             [SetUp]
             public async Task SetUp()
             {
-                await paymentsRepository.AddPayment(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
+                await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
                 context.SaveChanges();
                 paymentEntity = await context.Payments.SingleAsync();
             }

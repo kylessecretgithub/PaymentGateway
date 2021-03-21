@@ -14,7 +14,7 @@ namespace PaymentGateway.Gateway.DataAccess
             this.dbContext = dbContext;
         }
 
-        public async Task AddPayment(PaymentRequest paymentRequest, BankResponse bankResponse)
+        public async Task AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse)
         {
             var payment = new PaymentEntity
             {
