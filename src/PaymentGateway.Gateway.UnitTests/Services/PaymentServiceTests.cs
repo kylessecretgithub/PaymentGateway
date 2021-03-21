@@ -82,8 +82,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(response.PaymentId, Is.EqualTo(1));
-                    Assert.That(response.Status, Is.EqualTo("Processed"));
+                    Assert.That(response.PaymentId, Is.EqualTo(1), "PaymentId is not expected value");
+                    Assert.That(response.Status, Is.EqualTo("Processed"), "Status is not expected value");
                 });
             }
         }
@@ -105,8 +105,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(response.PaymentId, Is.Null);
-                    Assert.That(response.Status, Is.EqualTo("Failed to save processed payment"));
+                    Assert.That(response.PaymentId, Is.Null, "PaymentId is not null");
+                    Assert.That(response.Status, Is.EqualTo("Failed to save processed payment"), "Status is not expected value");
                 });
             }
         }

@@ -28,14 +28,14 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         }
 
         [TestFixture]
-        private class SubmitPayment_RequestIsAcceptedByBank : BankFacadeTests
+        private class ProcessPaymentAsync_RequestIsAcceptedByBank : BankFacadeTests
         {
             private BankResponse response;
 
             [SetUp]
             public async Task SetUp()
             {
-                response = await bankFacade.ProcessPayment(new PaymentRequestBuilder().Build());
+                response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
             [Test]
@@ -51,7 +51,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         }
 
         [TestFixture]
-        private class SubmitPayment_ErrorRequestingBankWithErrorContent : BankFacadeTests
+        private class ProcessPaymentAsync_ErrorRequestingBankWithErrorContent : BankFacadeTests
         {
             private BankResponse response;
 
@@ -68,7 +68,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                     .WithJsonContent(errorBankResponse)
                     .Build();
                 stubbedResponses["/api/ProcessPayment"] = badResponse;
-                response = await bankFacade.ProcessPayment(new PaymentRequestBuilder().Build());
+                response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
             [Test]
@@ -84,7 +84,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
 
 
         [TestFixture]
-        private class SubmitPayment_InvalidJsonContentReturned : BankFacadeTests
+        private class ProcessPaymentAsync_OkRequestWithInvalidJsonContentReturned : BankFacadeTests
         {
             private BankResponse response;
 
@@ -96,7 +96,36 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                     .WithJsonContent("My name is Jason, not JSON!")
                     .Build();
                 stubbedResponses["/api/ProcessPayment"] = badResponse;
-                response = await bankFacade.ProcessPayment(new PaymentRequestBuilder().Build());
+                response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
+            }
+
+            [Test]
+            public void BankResponse_has_only_failed_status_populated()
+            {
+                Assert.Multiple(() =>
+                {
+                    Assert.That(response.Status, Is.EqualTo("Failed"), "Status not populated with expected value");
+                    Assert.That(response.DetailedMessage, Is.Null, "Detailed Message not populated with expected value");
+                    Assert.That(response.PaymentId, Is.Null, "Detailed Message not populated with expected value");
+                });
+            }
+        }
+
+
+        [TestFixture]
+        private class ProcessPaymentAsync_ErrorRequestWithInvalidJsonContentReturned : BankFacadeTests
+        {
+            private BankResponse response;
+
+            [SetUp]
+            public async Task SetUp()
+            {
+                var badResponse = new HttpResponseMessageBuilder()
+                    .WithHttpStatusCode(HttpStatusCode.BadRequest)
+                    .WithJsonContent("My name is Jason, not JSON!")
+                    .Build();
+                stubbedResponses["/api/ProcessPayment"] = badResponse;
+                response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
             [Test]
@@ -112,7 +141,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         }
 
         [TestFixture]
-        private class SubmitPayment_ErrorWithRequest : BankFacadeTests
+        private class ProcessPaymentAsync_ErrorWithRequest : BankFacadeTests
         {
             private BankResponse response;
 
@@ -123,7 +152,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                     .WithHttpStatusCode(HttpStatusCode.BadRequest)
                     .Build();
                 stubbedResponses["/api/ProcessPayment"] = badResponse;
-                response = await bankFacade.ProcessPayment(new PaymentRequestBuilder().Build());
+                response = await bankFacade.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
             [Test]

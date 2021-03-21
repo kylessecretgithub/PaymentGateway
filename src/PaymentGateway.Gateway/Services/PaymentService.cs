@@ -16,7 +16,7 @@ namespace PaymentGateway.Gateway.Services
 
         public async Task<PaymentProcessedResponse> SendPaymentToBankAndSaveAsync(PaymentRequest paymentRequest)
         {
-            var bankResponse = await bank.ProcessPayment(paymentRequest);
+            var bankResponse = await bank.ProcessPaymentAsync(paymentRequest);
             var paymentId =  await reportingService.AddPaymentAsync(paymentRequest, bankResponse);
             if (paymentId == null && bankResponse.Status == "Processed")
             {

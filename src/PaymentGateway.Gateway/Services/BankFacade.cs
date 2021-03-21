@@ -16,7 +16,7 @@ namespace PaymentGateway.Gateway.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<BankResponse> ProcessPayment(PaymentRequest paymentRequest)
+        public async Task<BankResponse> ProcessPaymentAsync(PaymentRequest paymentRequest)
         {
             string processPaymentEndpoint = $"api/ProcessPayment";
             var request = new HttpRequestMessage(HttpMethod.Post, processPaymentEndpoint);
@@ -26,23 +26,29 @@ namespace PaymentGateway.Gateway.Services
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                BankResponse bankResponse;
-                try
-                {
-                    bankResponse = JsonConvert.DeserializeObject<BankResponse>(content);
-                    return bankResponse;
-                }
-                catch (Exception e)
-                {
-                    return new BankResponse("Failed");
-                }
+                return TryDeserialiseBankResponse(content);
             }
             if (response.Content != null)
             {
                 string errorJson = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<BankResponse>(errorJson);
+                return TryDeserialiseBankResponse(errorJson);
             }
             return new BankResponse("Failed");
+        }
+
+
+        public BankResponse TryDeserialiseBankResponse(string content)
+        {
+            BankResponse bankResponse;
+            try
+            {
+                bankResponse = JsonConvert.DeserializeObject<BankResponse>(content);
+                return bankResponse;
+            }
+            catch (Exception e)
+            {
+                return new BankResponse("Failed");
+            }
         }
 
     }
