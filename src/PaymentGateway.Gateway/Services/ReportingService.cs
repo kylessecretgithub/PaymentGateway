@@ -1,5 +1,7 @@
-﻿using PaymentGateway.Gateway.DataAccess;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.Models;
+using PaymentGateway.Gateway.Models.Entities;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.Services
@@ -12,10 +14,14 @@ namespace PaymentGateway.Gateway.Services
             this.paymentsRepository = paymentsRepository;
         }
 
-        public async Task<bool> AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse)
+        public async Task<int?> AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse)
         {
-            await paymentsRepository.AddPaymentAsync(paymentRequest, bankResponse);
-            return await paymentsRepository.SaveChangesAsync();
+            EntityEntry<PaymentEntity> paymentEntity  = await paymentsRepository.AddPaymentAsync(paymentRequest, bankResponse);                        
+            if (await paymentsRepository.SaveChangesAsync())
+            {
+                return paymentEntity.Entity.PaymentId;
+            }
+            return null;
         }
     }
 }

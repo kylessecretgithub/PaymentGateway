@@ -45,37 +45,37 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         [TestFixture]
         internal class AddPaymentAsync_PaymentIsSuccessfullyAdded : ReportingServiceTests
         {
-            private bool success;
+            private int? paymentId;
 
             [SetUp]
             public async Task SetUp()
             {
-                success = await reportingService.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
+                paymentId = await reportingService.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
             }
 
             [Test]
-            public void Returns_true()
+            public void Returns_paymentId()
             {
-                Assert.That(success, Is.True);
+                Assert.That(paymentId, Is.EqualTo(1));
             }
         }
 
         [TestFixture]
         internal class AddPaymentAsync_ErrorSavingToDb : ReportingServiceTests
         {
-            private bool success;
+            private int? paymentId;
 
             [SetUp]
             public async Task SetUp()
             {
                 var unsaveablePaymentRequest = new PaymentRequestBuilder().WithCurrencyISOCode(null).Build();
-                success = await reportingService.AddPaymentAsync(unsaveablePaymentRequest, new BankResponseBuilder().Build());
+                paymentId = await reportingService.AddPaymentAsync(unsaveablePaymentRequest, new BankResponseBuilder().Build());
             }
 
             [Test]
-            public void Returns_false()
+            public void Returns_null()
             {
-                Assert.That(success, Is.False);
+                Assert.That(paymentId, Is.Null);
             }
         }
 
