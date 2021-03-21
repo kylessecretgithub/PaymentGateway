@@ -26,6 +26,5 @@ namespace PaymentGateway.Gateway.Controllers.v1
             }
             return BadRequest(response);
         }
-
     }
 }

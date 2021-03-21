@@ -27,7 +27,6 @@ namespace PaymentGateway.Gateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<PaymentController>();
             services.AddScoped<PaymentService>();
             services.AddScoped<ReportingService>();
             services.AddScoped<PaymentsRepository>();

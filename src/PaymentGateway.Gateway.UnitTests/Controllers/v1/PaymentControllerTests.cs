@@ -59,7 +59,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             context = new PaymentGatewayContext(optionsBuilder.Options);
         }
 
-        public class ProcessTestAsync_PaymentProcesses : PaymentControllerTests
+        public class ProcessPaymentAsync_PaymentProcesses : PaymentControllerTests
         {
             private IActionResult response;
 
@@ -87,7 +87,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
         }
 
-        public class ProcessTestAsync_PaymentProcessesButFailsToSaveInDatabase : PaymentControllerTests
+        public class ProcessPaymentAsync_PaymentProcessesButFailsToSaveInDatabase : PaymentControllerTests
         {
             private IActionResult response;
 
@@ -116,7 +116,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
         }
 
-        public class ProcessTestAsync_PaymentFailsToProcessToBank : PaymentControllerTests
+        public class ProcessPaymentAsync_PaymentFailsToProcessToBank : PaymentControllerTests
         {
             private IActionResult response;
 
