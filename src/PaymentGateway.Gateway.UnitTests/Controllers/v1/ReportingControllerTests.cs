@@ -95,9 +95,9 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
 
             [Test]
-            public void Type_is_okObjectResult()
+            public void Type_is_notFoundObjectResult()
             {
-                Assert.That(response, Is.InstanceOf<BadRequestResult>());
+                Assert.That(response, Is.InstanceOf<NotFoundResult>());
             }
         }
     }

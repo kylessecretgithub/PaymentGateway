@@ -17,12 +17,12 @@ namespace PaymentGateway.Gateway.Controllers.v1
         }
 
         [HttpGet("GetPayment")]
-        public async Task<IActionResult> GetPaymentAsync([FromQuery] [Required]int? paymentId)
+        public async Task<IActionResult> GetPaymentAsync([Required]int? paymentId)
         {
             var response = await reportingService.GetPaymentAsync(paymentId.Value);
             if (response == null)
             {
-                return BadRequest();
+                return NotFound();
             }
             return Ok(response);
         }
