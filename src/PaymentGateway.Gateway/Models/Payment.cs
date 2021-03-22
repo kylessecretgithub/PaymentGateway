@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace PaymentGateway.Gateway.Models
 {
     public class Payment
     {
+        [JsonIgnore]
         public byte[] EncryptedCardNumber { get; set; }
+        [JsonIgnore]
+        public string CardNumber { get; set; }
         public int? CVV { get; set; }
         public int? ExpiryYear { get; set; }
         public int? ExpiryMonth { get; set; }
@@ -12,16 +16,21 @@ namespace PaymentGateway.Gateway.Models
         public string CurrencyISOCode { get; set; }
         public Guid? MerchantId { get; set; }
         public long? BankPaymentId { get; set; }
-        public string Status { get; set; }
-        public string CardNumber { get; set; }
-
+        public string Status { get; set; }        
+        public string MaskedCardNumber { get; set; }
         public void MaskCardNumber()
         {
-            string cardNumber = CardNumber;
-            if (cardNumber != null && cardNumber.Length > 2)
+            if (CardNumber != null)
             {
-                CardNumber = cardNumber.Substring(0, 3);
+                if (CardNumber.Length < 3)
+                {
+                    MaskedCardNumber = CardNumber;
+                    CardNumber = null;
+                    return;
+                }
+                MaskedCardNumber = CardNumber.Substring(0, 3);
             }
+            CardNumber = null;
         }
     }
 }

@@ -63,11 +63,34 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         internal class Get_GetPayment_PaymentRetrievedFromDatabase : ReportingControllerIntegrationTests
         {
             [Test]
-            public async Task Ok_status_returned()
+            public async Task Ok_response_returned()
             {
                 var res = await testingClient.GetAsync("api/v1/Reporting/GetPayment?paymentId=1");
 
                 Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            }
+
+            [Test]
+            public async Task EncryptedCardNumber_is_not_returned()
+            {
+                var res = await testingClient.GetAsync("api/v1/Reporting/GetPayment?paymentId=1");
+                var content = await res.Content.ReadAsStringAsync();
+
+                Assert.That(content.Contains("encryptedCardNumber"), Is.False);
+            }
+
+            [Test]
+            public async Task CardNumber_is_only_returned_masked()
+            {
+                var res = await testingClient.GetAsync("api/v1/Reporting/GetPayment?paymentId=1");
+                var content = await res.Content.ReadAsStringAsync();
+
+                Assert.Multiple(() =>
+                {
+                   Assert.That(content.Contains("\"maskedCardNumber\":\"123\""), Is.True, "Response content does not contain masked card number as expected");
+                   Assert.That(content.Contains("\"cardNumber\":"), Is.False, "Card number property found in response content");
+                });
+
             }
         }
 

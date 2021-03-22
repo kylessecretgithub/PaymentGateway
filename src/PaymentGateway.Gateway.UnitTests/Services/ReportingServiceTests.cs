@@ -103,7 +103,13 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             [Test]
             public void CardNumber_is_masked()
             {
-                Assert.That(payment.CardNumber, Is.EqualTo("123"));
+                Assert.That(payment.MaskedCardNumber, Is.EqualTo("123"));
+            }
+
+            [Test]
+            public void Unencrypted_cardNumber_does_not_leave_service_layer()
+            {
+                Assert.That(payment.CardNumber, Is.Null);
             }
         }
 

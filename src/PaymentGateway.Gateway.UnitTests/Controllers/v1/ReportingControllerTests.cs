@@ -76,7 +76,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(payment.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(payment.BankPaymentId, Is.EqualTo(123), "BankPaymentId not populated with expected value");
                     Assert.That(payment.Amount, Is.EqualTo(100), "Amount not populated with expected value");
-                    Assert.That(payment.CardNumber, Is.EqualTo("123"), "CardNumber not populated with expected value");
+                    Assert.That(payment.MaskedCardNumber, Is.EqualTo("123"), "CardNumber not populated with expected value");
                     Assert.That(payment.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
                     Assert.That(payment.CVV, Is.EqualTo(222), "CVV not populated with expected value");
                     Assert.That(payment.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");

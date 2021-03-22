@@ -14,7 +14,8 @@ namespace PaymentGateway.Gateway.UnitTests.Models
             };
             payment.MaskCardNumber();
 
-            Assert.That(payment.CardNumber, Is.EqualTo("123"));
+            Assert.That(payment.MaskedCardNumber, Is.EqualTo("123"));
+            Assert.That(payment.CardNumber, Is.Null);
         }
 
         [Test]
@@ -26,7 +27,8 @@ namespace PaymentGateway.Gateway.UnitTests.Models
             };
             payment.MaskCardNumber();
 
-            Assert.That(payment.CardNumber, Is.EqualTo("12"));
+            Assert.That(payment.MaskedCardNumber, Is.EqualTo("12"));
+            Assert.That(payment.CardNumber, Is.Null);
         }
 
         [Test]
@@ -34,8 +36,8 @@ namespace PaymentGateway.Gateway.UnitTests.Models
         {
             var payment = new Payment();
             payment.MaskCardNumber();
-
             Assert.That(payment.CardNumber, Is.Null);
+            Assert.That(payment.MaskedCardNumber, Is.Null);
         }
     }
 }
