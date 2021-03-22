@@ -41,7 +41,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         }
 
         [TearDown]
-        public async Task BaseTearDown()
+        internal async Task BaseTearDown()
         {
             using IServiceScope scope = webApplicationFactory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<PaymentGatewayContext>();
