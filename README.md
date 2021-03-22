@@ -3,11 +3,13 @@
 ## Routes
 
 - **/api/v1/Payment/ProcessPayment**
+
 Given a PaymentRequestModel, this route will process a payment to a bank and attempt to save the payment in to the database. The payment will be saved regardless of whether the bank sucessfully processed the request to enable auditing. The paymentId assigned to the payment once saved in the database will be returned to allow retrieval.
 
 
 
 - **/api/v1/Reporting/GetPayment/{Id}**
+
 Given a paymentId, this route will return the payment found matching the given ID.
 
 
