@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Gateway.Services;
 using Serilog;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ namespace PaymentGateway.Gateway.Controllers.v1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize(Policy = "GetPayment")]
     public class ReportingController : ControllerBase
     {
         private readonly ReportingService reportingService;
