@@ -1,0 +1,58 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  branches:
+    include:
+      - '*'
+    exclude:
+      - 'nb-*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: 'restore'
+    projects: './src/PaymentGateway.sln'
+    feedsToUse: 'select'
+    vstsFeed: '8ab717b2-fddf-4e0d-9022-b62cde846d79'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: './src/PaymentGateway.sln'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet unit test'
+  inputs:
+    command: 'test'
+    projects: './src/PaymentGateway.Gateway.UnitTests/PaymentGateway.Gateway.UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet integration test'
+  inputs:
+    command: 'test'
+    projects: './src/PaymentGateway.Gateway.IntegrationTests/PaymentGateway.Gateway.IntegrationTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish'
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    projects: '/src/PaymentGateway.Gateway/PaymentGateway.Gateway.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build --no-restore'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts'
