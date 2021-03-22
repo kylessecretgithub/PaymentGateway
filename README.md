@@ -7,12 +7,9 @@
 Given a PaymentRequestModel, this route will process a payment to a bank and attempt to save the payment in to the database. The payment will be saved regardless of whether the bank sucessfully processed the request to enable auditing. The paymentId assigned to the payment once saved in the database will be returned to allow retrieval.
 
 
-
 - **/api/v1/Reporting/GetPayment/{Id}**
 
 Given a paymentId, this route will return the payment found matching the given ID.
-
-
 
 ## Running Instructions
 This application is available for testing locally using visual studio and swagger. Open the .sln file in visual studio (visual studio 2019 tested) and navigate to the top and hit the start button. To the left of the start button it should display Multiple Startup Projects. If it doesn't, righy click the .sln from within visual studio. Select properties and then configure the projects: PaymentGateway.FakeBankApi and PaymentGateway.Gateway to have start in the action drop down. Hit apply and ok.
@@ -21,10 +18,9 @@ Once the start button has been clicked two windows should launch. One should be 
 
 The fake bank api has been programmed to response with certain responses to enable testing. The behaviours are configured by switching the amount property in the payment request.
 Behaviours:
-amount 100 > Bank responds with 200 status code
-amount 1000 > Bank responds with 400 status code with content.
-Any other amount will result in a 400 status code without content being returned
-
+- amount == 100, Bank responds with 200 status code
+- amount == 1000, Bank responds with 400 status code with content.
+- Any other amount will result in a 400 status code without content being returned
 
 ## Assumptions Made
 
