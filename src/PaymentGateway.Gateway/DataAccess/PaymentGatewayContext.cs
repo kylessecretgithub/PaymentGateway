@@ -19,7 +19,7 @@ namespace PaymentGateway.Gateway.DataAccess
                 entity.HasKey(e => e.PaymentId);
                 entity.Property(e => e.Status).IsRequired();
                 entity.Property(e => e.Amount).IsRequired();
-                entity.Property(e => e.CardNumber).IsRequired();
+                entity.Property(e => e.EncryptedCardNumber).IsRequired();
                 entity.Property(e => e.CurrencyISOCode).IsRequired();
                 entity.Property(e => e.CVV).IsRequired();
                 entity.Property(e => e.ExpiryMonth).IsRequired();

@@ -92,7 +92,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             [SetUp]
             public async Task SetUp()
             {
-                await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build());
+                await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build(), new byte[0]);
                 await context.SaveChangesAsync();
                 paymentEntity = await context.Payments.SingleAsync();
             }
@@ -105,7 +105,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
                     Assert.That(paymentEntity.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(paymentEntity.BankPaymentId, Is.EqualTo(1), "BankPaymentId not populated with expected value");
                     Assert.That(paymentEntity.Amount, Is.EqualTo(100), "Amount not populated with expected value");
-                    Assert.That(paymentEntity.CardNumber, Is.EqualTo(1231231), "CardNumber not populated with expected value");
+                    Assert.That(paymentEntity.EncryptedCardNumber, Is.EqualTo(1231231), "CardNumber not populated with expected value");
                     Assert.That(paymentEntity.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
                     Assert.That(paymentEntity.CVV, Is.EqualTo(222), "CVV not populated with expected value");
                     Assert.That(paymentEntity.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");

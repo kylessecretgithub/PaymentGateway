@@ -10,11 +10,11 @@ namespace PaymentGateway.Gateway.UnitTests.Models
         {
             var payment = new Payment
             {
-                CardNumber = 12345678
+                CardNumber = "12345678"
             };
             payment.MaskCardNumber();
 
-            Assert.That(payment.CardNumber, Is.EqualTo(123));
+            Assert.That(payment.CardNumber, Is.EqualTo("123"));
         }
 
         [Test]
@@ -22,11 +22,11 @@ namespace PaymentGateway.Gateway.UnitTests.Models
         {
             var payment = new Payment
             {
-                CardNumber = 12
+                CardNumber = "12"
             };
             payment.MaskCardNumber();
 
-            Assert.That(payment.CardNumber, Is.EqualTo(12));
+            Assert.That(payment.CardNumber, Is.EqualTo("12"));
         }
 
         [Test]

@@ -9,18 +9,23 @@ namespace PaymentGateway.Gateway.Services
     public class ReportingService
     {
         private readonly PaymentsRepository paymentsRepository;
-        public ReportingService(PaymentsRepository paymentsRepository)
+        private readonly AesEncryption aesEncryption;
+
+        public ReportingService(PaymentsRepository paymentsRepository, AesEncryption aesEncryption)
         {
+            this.aesEncryption = aesEncryption;
             this.paymentsRepository = paymentsRepository;
         }
 
         public async Task<int?> AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse)
         {
-            EntityEntry<PaymentEntity> paymentEntity  = await paymentsRepository.AddPaymentAsync(paymentRequest, bankResponse);                        
+            byte[] encryptedCard = aesEncryption.EncryptString(paymentRequest.CardNumber.ToString());
+            
+            EntityEntry<PaymentEntity> paymentEntity  = await paymentsRepository.AddPaymentAsync(paymentRequest, bankResponse, encryptedCard);                        
             if (await paymentsRepository.SaveChangesAsync())
             {
                 return paymentEntity.Entity.PaymentId;
-            }
+            }            
             return null;
         }
 
@@ -31,6 +36,7 @@ namespace PaymentGateway.Gateway.Services
             {
                 return null;
             }
+            payment.CardNumber = aesEncryption.DecryptToString(payment.EncryptedCardNumber);
             payment.MaskCardNumber();
             return payment;            
         }

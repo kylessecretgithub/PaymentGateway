@@ -30,7 +30,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             SetUpDatabase();
             SetUpBankFacade();
             var paymentsRepository = new PaymentsRepository(context);
-            var reportingService = new ReportingService(paymentsRepository);
+            var reportingService = new ReportingService(paymentsRepository, null);
             var paymentService = new PaymentService(reportingService, bankFacade);
             paymentController = new PaymentController(paymentService);
         }

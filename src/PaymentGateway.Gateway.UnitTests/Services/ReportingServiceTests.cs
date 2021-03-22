@@ -29,7 +29,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
             context = new PaymentGatewayContext(optionsBuilder.Options);
             var paymentsRepository = new PaymentsRepository(context);
-            reportingService = new ReportingService(paymentsRepository);
+            reportingService = new ReportingService(paymentsRepository, null);
         }
 
         [TearDown]

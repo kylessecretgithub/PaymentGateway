@@ -10,7 +10,7 @@ namespace PaymentGateway.Gateway.Models.Entities
         }
 
         public int PaymentId { get; set; }
-        public int CardNumber { get; set; }
+        public byte[] EncryptedCardNumber { get; set; }
         public int CVV { get; set; }
         public int ExpiryYear { get; set; }
         public int ExpiryMonth { get; set; }

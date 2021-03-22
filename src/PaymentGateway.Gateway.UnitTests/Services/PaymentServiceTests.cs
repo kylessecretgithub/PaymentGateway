@@ -28,7 +28,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             SetUpDatabse();
             SetUpBankFacade();
             var paymentsRepository = new PaymentsRepository(context);
-            var reportingService = new ReportingService(paymentsRepository);
+            var reportingService = new ReportingService(paymentsRepository, null);
             paymentService = new PaymentService(reportingService, bankFacade);
         }
 

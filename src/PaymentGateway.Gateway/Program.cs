@@ -18,9 +18,9 @@ namespace PaymentGateway.Gateway
             {
                 context.Database.EnsureCreated();
             }
-            catch (Exception ex)
+            catch 
+            (Exception)
             {
-                //log
             }
             host.Run();
         }

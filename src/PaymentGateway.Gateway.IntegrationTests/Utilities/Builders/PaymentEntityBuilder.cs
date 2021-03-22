@@ -11,7 +11,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.Utilities.Builders
             {
                 Amount = 100,
                 BankPaymentId = 123,
-                CardNumber = 1231231,
+                EncryptedCardNumber = new byte[0],
                 CurrencyISOCode = "WOW",
                 CVV = 222,
                 ExpiryMonth = 10,

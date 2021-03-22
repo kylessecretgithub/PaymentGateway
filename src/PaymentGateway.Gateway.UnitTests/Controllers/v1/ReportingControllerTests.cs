@@ -32,7 +32,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
             context = new PaymentGatewayContext(optionsBuilder.Options);
             var paymentsRepository = new PaymentsRepository(context);
-            var reportingService = new ReportingService(paymentsRepository);
+            var reportingService = new ReportingService(paymentsRepository, null);
             reportingController = new ReportingController(reportingService);
         }
 

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PaymentGateway.Gateway.Controllers.v1;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Services;
 using System;
 
@@ -30,6 +31,9 @@ namespace PaymentGateway.Gateway
             services.AddScoped<PaymentService>();
             services.AddScoped<ReportingService>();
             services.AddScoped<PaymentsRepository>();
+            services.AddScoped(s => new AesKey(Configuration["EncyrptionKey"]));
+            services.AddScoped<AesEncryption>();
+            services.AddSingleton<RandomNumberGeneratorProxyFactory>();
             services.AddDbContextPool<PaymentGatewayContext>(options =>
                options.UseInMemoryDatabase(Configuration.GetConnectionString("ReportingDatabaseConnectionString")));
             string bankEndpoint = Configuration.GetConnectionString("BankConnectionString");

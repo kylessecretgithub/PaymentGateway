@@ -16,12 +16,12 @@ namespace PaymentGateway.Gateway.DataAccess
             this.dbContext = dbContext;
         }
 
-        public async Task<EntityEntry<PaymentEntity>> AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse)
+        public async Task<EntityEntry<PaymentEntity>> AddPaymentAsync(PaymentRequest paymentRequest, BankResponse bankResponse, byte[] encryptedCard)
         {
             var payment = new PaymentEntity
             {
                 Amount = paymentRequest.Amount.Value,
-                CardNumber = paymentRequest.CardNumber.Value,
+                EncryptedCardNumber = encryptedCard,
                 CurrencyISOCode = paymentRequest.CurrencyISOCode,
                 CVV = paymentRequest.CVV.Value,
                 ExpiryMonth = paymentRequest.ExpiryMonth.Value,
@@ -40,7 +40,7 @@ namespace PaymentGateway.Gateway.DataAccess
                 .Select(pe => new Payment 
                 {
                     Amount = pe.Amount,
-                    CardNumber = pe.CardNumber,
+                    EncryptedCardNumber = pe.EncryptedCardNumber,
                     CurrencyISOCode = pe.CurrencyISOCode,
                     CVV = pe.CVV,
                     ExpiryMonth = pe.ExpiryMonth,
