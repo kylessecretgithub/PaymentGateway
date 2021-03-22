@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Models.Entities;
+using Serilog;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,6 +61,7 @@ namespace PaymentGateway.Gateway.DataAccess
             }
             catch (DbUpdateException e)
             {
+                Log.Error($"Exception: \"{e.Message}\" raised from saving changes to DB");
                 return false;
             }
             return true;

@@ -6,7 +6,10 @@ using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Models.Entities;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
+using Serilog;
+using Serilog.Sinks.TestCorrelator;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +20,14 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
         protected PaymentGatewayContext context;
         protected PaymentsRepository paymentsRepository;
         protected DbContextOptionsBuilder<PaymentGatewayContext> optionsBuilder;
+        protected Guid loggingContextGuid;
         private SqliteConnection connection;
 
         [SetUp]
         public void BaseSetUp()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
+            loggingContextGuid = TestCorrelator.CreateContext().Guid;
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             optionsBuilder = new DbContextOptionsBuilder<PaymentGatewayContext>();
@@ -81,6 +87,12 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             public void Returns_false()
             {
                 Assert.False(saved);
+            }
+
+            [Test]
+            public void Logs_exception_raised_from_saving_changes()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Exception: \"Exception of type 'Microsoft.EntityFrameworkCore.DbUpdateException' was thrown.\" raised from saving changes to DB")), Is.EqualTo(1));
             }
         }
     

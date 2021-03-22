@@ -9,7 +9,11 @@ using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
 using PaymentGateway.Gateway.UnitTests.Utilities.Fakes;
+using Serilog;
+using Serilog.Sinks.TestCorrelator;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,10 +28,14 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
         private BankFacade bankFacade;
         protected Dictionary<string, HttpResponseMessage> stubbedResponses;
         protected PaymentController paymentController;
+        protected Guid loggingContextGuid;
 
         [SetUp]
         public void BaseSetUp()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
+            loggingContextGuid = TestCorrelator.CreateContext().Guid;
+
             SetUpDatabase();
             SetUpBankFacade();
             var paymentsRepository = new PaymentsRepository(context);
@@ -87,6 +95,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(paymentResponse.Status, Is.EqualTo("Processed"), "Status is not expected value");
                 });
             }
+
+            [Test]
+            public void Logs_incoming_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Incoming payment request")), Is.EqualTo(1));
+            }
+
+            [Test]
+            public void Logs_sucessful_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Sucessfully processed payment to bank")), Is.EqualTo(1));
+            }
         }
         internal class ProcessPaymentAsync_PaymentProcessesButFailsToSaveInDatabase : PaymentControllerTests
         {
@@ -114,6 +134,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(paymentResponse.PaymentId, Is.Null, "PaymentId is not null");
                     Assert.That(paymentResponse.Status, Is.EqualTo("Failed to save processed payment"), "Status is not expected value");
                 });
+            }
+
+            [Test]
+            public void Logs_incoming_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Incoming payment request")), Is.EqualTo(1));
+            }
+
+            [Test]
+            public void Logs_sucessful_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Sucessfully processed payment to bank")), Is.EqualTo(1));
             }
         }
 
@@ -153,6 +185,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(paymentResponse.PaymentId, Is.EqualTo(1), "PaymentId is not expected value");
                     Assert.That(paymentResponse.Status, Is.EqualTo("merchant not recognised"), "Status is not expected value");
                 });
+            }
+
+            [Test]
+            public void Logs_incoming_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Incoming payment request")), Is.EqualTo(1));
+            }
+
+            [Test]
+            public void Logs_failed_request_message()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Failed to process payment to bank")), Is.EqualTo(1));
             }
         }
     }

@@ -8,7 +8,10 @@ using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
+using Serilog;
+using Serilog.Sinks.TestCorrelator;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
@@ -18,11 +21,14 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
         protected PaymentGatewayContext context;
         protected ReportingController reportingController;
         protected DbContextOptionsBuilder<PaymentGatewayContext> optionsBuilder;
+        protected Guid loggingContextGuid;
         private SqliteConnection connection;
 
         [SetUp]
         public void BaseSetUp()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
+            loggingContextGuid = TestCorrelator.CreateContext().Guid;
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             optionsBuilder = new DbContextOptionsBuilder<PaymentGatewayContext>();
@@ -84,6 +90,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(payment.MerchantId, Is.EqualTo(Guid.Parse("10247758-5c1f-4afb-ac43-a94d2a9e5fae")), "MerchantId not populated with expected value");
                 });
             }
+
+            [Test]
+            public void Logs_incoming_payment_request()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Incoming GetPaymentRequest with payment ID 1")), Is.EqualTo(1));
+            }
+
+            [Test]
+            public void Logs_payment_found()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Returning payment with payment ID 1")), Is.EqualTo(1));
+            }
         }
 
         public class GetPaymentAsync_PaymentIsNotRetrieved: ReportingControllerTests
@@ -100,6 +118,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             public void Type_is_notFoundObjectResult()
             {
                 Assert.That(response, Is.InstanceOf<NotFoundResult>());
+            }
+
+            [Test]
+            public void Logs_incoming_payment_request()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Incoming GetPaymentRequest with payment ID 1")), Is.EqualTo(1));
+            }
+
+            [Test]
+            public void Logs_payment_not_found()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("No paymentId found with ID 1")), Is.EqualTo(1));
             }
         }
     }

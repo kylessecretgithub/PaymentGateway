@@ -1,4 +1,5 @@
 ﻿using PaymentGateway.Gateway.Models;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.Services
@@ -17,7 +18,8 @@ namespace PaymentGateway.Gateway.Services
         public async Task<PaymentProcessedResponse> SendPaymentToBankAndSaveAsync(PaymentRequest paymentRequest)
         {
             var bankResponse = await bank.ProcessPaymentAsync(paymentRequest);
-            var paymentId =  await reportingService.AddPaymentAsync(paymentRequest, bankResponse);
+            Log.Information($"Status returned from processing payment to bank: {bankResponse.Status}");
+            var paymentId =  await reportingService.AddPaymentAsync(paymentRequest, bankResponse);            
             if (paymentId == null && bankResponse.Status == "Processed")
             {
                 return new PaymentProcessedResponse(paymentId, "Failed to save processed payment");

@@ -9,6 +9,7 @@ using PaymentGateway.Gateway.Controllers.v1;
 using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Services;
+using Serilog;
 using System;
 
 namespace PaymentGateway.Gateway
@@ -48,6 +49,13 @@ namespace PaymentGateway.Gateway
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentGateway", Version = "v1" });
                 });
             }
+            ConfigureLogging();
+        }
+        private void ConfigureLogging()
+        {
+                Log.Logger = new LoggerConfiguration()
+                    .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

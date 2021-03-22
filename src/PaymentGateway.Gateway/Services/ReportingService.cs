@@ -2,6 +2,7 @@
 using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Models.Entities;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.Services
@@ -24,8 +25,10 @@ namespace PaymentGateway.Gateway.Services
             EntityEntry<PaymentEntity> paymentEntity  = await paymentsRepository.AddPaymentAsync(paymentRequest, bankResponse, encryptedCard);                        
             if (await paymentsRepository.SaveChangesAsync())
             {
+                Log.Information($"Sucessfully saved payment request to database");
                 return paymentEntity.Entity.PaymentId;
-            }            
+            }
+            Log.Error($"Error saving payment request to database");
             return null;
         }
 

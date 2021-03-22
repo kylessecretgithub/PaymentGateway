@@ -7,7 +7,11 @@ using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
 using PaymentGateway.Gateway.UnitTests.Utilities.Fakes;
+using Serilog;
+using Serilog.Sinks.TestCorrelator;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,11 +25,13 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         private BankFacade bankFacade;
         protected Dictionary<string, HttpResponseMessage> stubbedResponses;
         protected PaymentService paymentService;
-
+        protected Guid loggingContextGuid;
 
         [SetUp]
         public void BaseSetUp()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
+            loggingContextGuid = TestCorrelator.CreateContext().Guid;
             SetUpDatabse();
             SetUpBankFacade();
             var paymentsRepository = new PaymentsRepository(context);
@@ -88,6 +94,12 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                     Assert.That(response.Status, Is.EqualTo("Processed"), "Status is not expected value");
                 });
             }
+
+            [Test]
+            public void Logs_status_returned_from_bank()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Status returned from processing payment to bank: Processed")), Is.EqualTo(1));
+            }
         }
 
         [TestFixture]
@@ -110,6 +122,12 @@ namespace PaymentGateway.Gateway.UnitTests.Services
                     Assert.That(response.PaymentId, Is.Null, "PaymentId is not null");
                     Assert.That(response.Status, Is.EqualTo("Failed to save processed payment"), "Status is not expected value");
                 });
+            }
+
+            [Test]
+            public void Logs_status_returned_from_bank()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Status returned from processing payment to bank: Processed")), Is.EqualTo(1));
             }
         }
     }

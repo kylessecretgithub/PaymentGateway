@@ -6,6 +6,10 @@ using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
+using Serilog;
+using Serilog.Sinks.TestCorrelator;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Gateway.UnitTests.Services
@@ -15,11 +19,14 @@ namespace PaymentGateway.Gateway.UnitTests.Services
         protected PaymentGatewayContext context;
         protected ReportingService reportingService;
         protected DbContextOptionsBuilder<PaymentGatewayContext> optionsBuilder;
+        protected Guid loggingContextGuid;
         private SqliteConnection connection;
 
         [SetUp]
         public void BaseSetUp()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
+            loggingContextGuid = TestCorrelator.CreateContext().Guid;
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             optionsBuilder = new DbContextOptionsBuilder<PaymentGatewayContext>();
@@ -60,6 +67,12 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             {
                 Assert.That(paymentId, Is.EqualTo(1));
             }
+
+            [Test]
+            public void Logs_entity_has_been_saved()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Sucessfully saved payment request to database")), Is.EqualTo(1));
+            }
         }
 
         [TestFixture]
@@ -78,6 +91,12 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             public void Returns_null()
             {
                 Assert.That(paymentId, Is.Null);
+            }
+
+            [Test]
+            public void Logs_entity_has_been_saved()
+            {
+                Assert.That(TestCorrelator.GetLogEventsFromContextGuid(loggingContextGuid).Count(l => l.MessageTemplate.Text.Contains("Error saving payment request to database")), Is.EqualTo(1));
             }
         }
 
