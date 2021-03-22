@@ -19,7 +19,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         private WebApplicationFactory<Startup> webApplicationFactory;
 
         [SetUp]
-        internal async Task BaseSetUp()
+        public async Task BaseSetUp()
         {
             var bankResponseMessage = new HttpResponseMessageBuilder().WithJsonContent(new BankResponseBuilder().BuildJson()).Build();
             var stubbedResponses = new Dictionary<string, HttpResponseMessage>
@@ -41,7 +41,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         }
 
         [TearDown]
-        internal async Task BaseTearDown()
+        public async Task BaseTearDown()
         {
             using IServiceScope scope = webApplicationFactory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<PaymentGatewayContext>();

@@ -25,7 +25,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
         protected PaymentController paymentController;
 
         [SetUp]
-        internal void BaseSetUp()
+        public void BaseSetUp()
         {
             SetUpDatabase();
             SetUpBankFacade();
@@ -46,7 +46,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             bankFacade = new BankFacade(httpClient);
         }
 
-        internal void SetUpDatabase()
+        public void SetUpDatabase()
         {
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -64,18 +64,18 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             private IActionResult response;
 
             [SetUp]
-            internal async Task SetUp()
+            public async Task SetUp()
             {
                 response = await paymentController.ProcessPaymentAsync(new PaymentRequestBuilder().Build());
             }
 
-            internal void Type_is_okObjectResult()
+            public void Type_is_okObjectResult()
             {
                 Assert.That(response, Is.InstanceOf<OkObjectResult>());
             }
 
             [Test]
-            internal void Returns_processing_details_in_response()
+            public void Returns_processing_details_in_response()
             {                
                 var okObject = response as OkObjectResult;
                 var paymentResponse = okObject.Value as PaymentProcessedResponse;
@@ -91,19 +91,19 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             private IActionResult response;
 
             [SetUp]
-            internal async Task SetUp()
+            public async Task SetUp()
             {
                 response = await paymentController.ProcessPaymentAsync(new PaymentRequestBuilder().WithCurrencyISOCode(null).Build());
             }
 
             [Test]
-            internal void Type_is_okObjectResult()
+            public void Type_is_okObjectResult()
             {
                 Assert.That(response, Is.InstanceOf<OkObjectResult>());
             }
 
             [Test]
-            internal void Returns_processing_details_in_response()
+            public void Returns_processing_details_in_response()
             {
                 var okObject = response as OkObjectResult;
                 var paymentResponse = okObject.Value as PaymentProcessedResponse;
@@ -120,7 +120,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             private IActionResult response;
 
             [SetUp]
-            internal async Task SetUp()
+            public async Task SetUp()
             {
                 var errorBankResponse = new BankResponseBuilder()
                     .WithDetailedMessage("unable to find merchant")
@@ -136,13 +136,13 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
 
             [Test]
-            internal void Type_is_badRequestObjectResult()
+            public void Type_is_badRequestObjectResult()
             {
                 Assert.That(response, Is.InstanceOf<BadRequestObjectResult>());
             }
 
             [Test]
-            internal void Returns_processing_details_in_response()
+            public void Returns_processing_details_in_response()
             {
                 var okObject = response as BadRequestObjectResult;
                 var paymentResponse = okObject.Value as PaymentProcessedResponse;
