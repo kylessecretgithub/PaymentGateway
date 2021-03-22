@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
@@ -28,7 +29,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             SetUpDatabse();
             SetUpBankFacade();
             var paymentsRepository = new PaymentsRepository(context);
-            var reportingService = new ReportingService(paymentsRepository, null);
+            var aesKey = new AesKey("Zq3t6w9z$C&F)J@N");
+            var reportingService = new ReportingService(paymentsRepository, new AesEncryption(new RandomNumberGeneratorProxyFactory(), aesKey));
             paymentService = new PaymentService(reportingService, bankFacade);
         }
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PaymentGateway.Gateway.Controllers.v1;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
@@ -32,7 +33,8 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
             }
             context = new PaymentGatewayContext(optionsBuilder.Options);
             var paymentsRepository = new PaymentsRepository(context);
-            var reportingService = new ReportingService(paymentsRepository, null);
+            var aesKey = new AesKey("hunter2");
+            var reportingService = new ReportingService(paymentsRepository, new AesEncryption(new RandomNumberGeneratorProxyFactory(), aesKey));
             reportingController = new ReportingController(reportingService);
         }
 
@@ -74,7 +76,7 @@ namespace PaymentGateway.Gateway.UnitTests.Controllers.v1
                     Assert.That(payment.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(payment.BankPaymentId, Is.EqualTo(123), "BankPaymentId not populated with expected value");
                     Assert.That(payment.Amount, Is.EqualTo(100), "Amount not populated with expected value");
-                    Assert.That(payment.CardNumber, Is.EqualTo(123), "CardNumber not populated with expected value");
+                    Assert.That(payment.CardNumber, Is.EqualTo("123"), "CardNumber not populated with expected value");
                     Assert.That(payment.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
                     Assert.That(payment.CVV, Is.EqualTo(222), "CVV not populated with expected value");
                     Assert.That(payment.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");

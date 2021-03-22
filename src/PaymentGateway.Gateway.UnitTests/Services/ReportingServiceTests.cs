@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PaymentGateway.Gateway.DataAccess;
+using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using PaymentGateway.Gateway.UnitTests.Utilities.Builders;
@@ -29,7 +30,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             }
             context = new PaymentGatewayContext(optionsBuilder.Options);
             var paymentsRepository = new PaymentsRepository(context);
-            reportingService = new ReportingService(paymentsRepository, null);
+            var aesKey = new AesKey("hunter2");
+            reportingService = new ReportingService(paymentsRepository, new AesEncryption(new RandomNumberGeneratorProxyFactory(), aesKey));
         }
 
         [TearDown]
@@ -101,7 +103,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             [Test]
             public void CardNumber_is_masked()
             {
-                Assert.That(payment.CardNumber, Is.EqualTo(123));
+                Assert.That(payment.CardNumber, Is.EqualTo("123"));
             }
         }
 

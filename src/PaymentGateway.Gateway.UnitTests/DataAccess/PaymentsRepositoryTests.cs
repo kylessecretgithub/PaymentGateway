@@ -92,7 +92,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             [SetUp]
             public async Task SetUp()
             {
-                await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build(), new byte[0]);
+                await paymentsRepository.AddPaymentAsync(new PaymentRequestBuilder().Build(), new BankResponseBuilder().Build(), new byte[] { 10, 14 });
                 await context.SaveChangesAsync();
                 paymentEntity = await context.Payments.SingleAsync();
             }
@@ -105,7 +105,7 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
                     Assert.That(paymentEntity.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(paymentEntity.BankPaymentId, Is.EqualTo(1), "BankPaymentId not populated with expected value");
                     Assert.That(paymentEntity.Amount, Is.EqualTo(100), "Amount not populated with expected value");
-                    Assert.That(paymentEntity.EncryptedCardNumber, Is.EqualTo(1231231), "CardNumber not populated with expected value");
+                    Assert.That(paymentEntity.EncryptedCardNumber, Is.EqualTo(new byte[] { 10, 14 }), "EncryptedCardNumber not populated with expected value");
                     Assert.That(paymentEntity.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
                     Assert.That(paymentEntity.CVV, Is.EqualTo(222), "CVV not populated with expected value");
                     Assert.That(paymentEntity.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");
@@ -132,12 +132,13 @@ namespace PaymentGateway.Gateway.UnitTests.DataAccess
             [Test]
             public void Payment_retrieved_with_properties_populated()
             {
+                var encryptedCardNumber = new byte[32] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 253, 200, 83, 111, 57, 31, 173, 118, 154, 192, 90, 3, 57, 128, 71, 48 };
                 Assert.Multiple(() =>
                 {
                     Assert.That(payment.Status, Is.EqualTo("Processed"), "Status not populated with expected value");
                     Assert.That(payment.BankPaymentId, Is.EqualTo(123), "BankPaymentId not populated with expected value");
                     Assert.That(payment.Amount, Is.EqualTo(100), "Amount not populated with expected value");
-                    Assert.That(payment.CardNumber, Is.EqualTo(1231231), "CardNumber not populated with expected value");
+                    Assert.That(payment.EncryptedCardNumber, Is.EqualTo(encryptedCardNumber), "EncryptedCardNumber not populated with expected value");
                     Assert.That(payment.CurrencyISOCode, Is.EqualTo("WOW"), "CurrencyISOCode not populated with expected value");
                     Assert.That(payment.CVV, Is.EqualTo(222), "CVV not populated with expected value");
                     Assert.That(payment.ExpiryMonth, Is.EqualTo(10), "ExpiryMonth not populated with expected value");

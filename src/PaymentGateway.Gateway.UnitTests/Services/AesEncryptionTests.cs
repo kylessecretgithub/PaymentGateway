@@ -37,11 +37,8 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             [Test]
             public void Symmetrically_encrypts_data()
             {
-                byte[] expectedEncryption = new byte[32] { Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(195), Convert.ToByte(198), Convert.ToByte(173), Convert.ToByte(23), Convert.ToByte(80), Convert.ToByte(60), Convert.ToByte(232), Convert.ToByte(104), Convert.ToByte(223), Convert.ToByte(12), Convert.ToByte(201), Convert.ToByte(13), Convert.ToByte(76), Convert.ToByte(7), Convert.ToByte(5), Convert.ToByte(90) };
-                for (int i = 0; i < expectedEncryption.Length; i++)
-                {
-                    Assert.That(encryptedString[i], Is.EqualTo(expectedEncryption[i]));
-                }
+                byte[] expectedEncryption = new byte[32] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 195, 198, 173, 23, 80, 60, 232, 104, 223, 12, 201, 13, 76, 7, 5, 90 };
+                Assert.That(encryptedString, Is.EqualTo(expectedEncryption));
             }
 
             [Test]
@@ -59,7 +56,7 @@ namespace PaymentGateway.Gateway.UnitTests.Services
             [SetUp]
             public void SetUp()
             {
-                byte[] encryptedString = new byte[32] { Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(195), Convert.ToByte(198), Convert.ToByte(173), Convert.ToByte(23), Convert.ToByte(80), Convert.ToByte(60), Convert.ToByte(232), Convert.ToByte(104), Convert.ToByte(223), Convert.ToByte(12), Convert.ToByte(201), Convert.ToByte(13), Convert.ToByte(76), Convert.ToByte(7), Convert.ToByte(5), Convert.ToByte(90) };
+                byte[] encryptedString = new byte[32] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 195, 198, 173, 23, 80, 60, 232, 104, 223, 12, 201, 13, 76, 7, 5, 90 };
                 var aesEncrpytion = new AesEncryption(rngFactory.Object, aesKey);
                 decryptedString = aesEncrpytion.DecryptToString(encryptedString);
             }

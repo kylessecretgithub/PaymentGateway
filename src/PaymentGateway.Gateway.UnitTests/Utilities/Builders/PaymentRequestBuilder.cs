@@ -11,7 +11,7 @@ namespace PaymentGateway.Gateway.UnitTests.Utilities.Builders
             return new PaymentRequest
             {
                 Amount = 100,
-                CardNumber = 1231231,
+                CardNumber = 1231231,                
                 CurrencyISOCode = currencyISOCode,
                 CVV = 222,
                 ExpiryMonth = 10,
