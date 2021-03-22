@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Gateway.Models;
 using PaymentGateway.Gateway.Services;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 namespace PaymentGateway.Gateway.Controllers.v1
 {
     [Route("api/v1/[controller]")]
+    [Authorize(Policy = "ProcessPayment")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
