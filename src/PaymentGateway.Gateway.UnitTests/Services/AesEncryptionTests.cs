@@ -3,7 +3,6 @@ using NUnit.Framework;
 using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Proxies;
 using PaymentGateway.Gateway.Services;
-using System;
 
 namespace PaymentGateway.Gateway.UnitTests.Services
 {
