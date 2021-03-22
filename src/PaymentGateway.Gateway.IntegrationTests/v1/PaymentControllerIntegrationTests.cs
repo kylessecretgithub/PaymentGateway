@@ -19,7 +19,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         protected Dictionary<string, HttpResponseMessage> stubbedResponses;
 
         [SetUp]
-        internal void SetUp()
+        public void SetUp()
         {
             var bankResponseMessage =  new HttpResponseMessageBuilder().WithJsonContent(new BankResponseBuilder().BuildJson()).Build();
             stubbedResponses = new Dictionary<string, HttpResponseMessage>
@@ -40,7 +40,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         internal class Post_ProcessPayment_ModelValidation : PaymentControllerIntegrationTests
         {            
             [Test]
-            internal async Task CardNumber_is_required()
+            public async Task CardNumber_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithExpiryYear(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -50,7 +50,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task CVV_is_required()
+            public async Task CVV_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithCVV(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -60,7 +60,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task ExpiryYear_is_required()
+            public async Task ExpiryYear_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithExpiryYear(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -70,7 +70,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task ExpiryMonth_is_required()
+            public async Task ExpiryMonth_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithExpiryMonth(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -80,7 +80,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task Amount_is_required()
+            public async Task Amount_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithAmount(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -90,7 +90,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task CurrencyISOCode_is_required()
+            public async Task CurrencyISOCode_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithCurrencyISOCode(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -100,7 +100,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal async Task MerchantId_is_required()
+            public async Task MerchantId_is_required()
             {
                 var jsonRequest = new PaymentRequestBuilder().WithMerchantId(null).BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -115,7 +115,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             private HttpResponseMessage res;
 
             [SetUp]
-            internal async Task Setup()
+            public async Task Setup()
             {
                 var jsonRequest = new PaymentRequestBuilder().BuildJson();
                 var httpContent = new StringContent(jsonRequest, Encoding.Unicode, "application/json");
@@ -124,7 +124,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
 
             [Test]
-            internal void Returns_ok_response()
+            public void Returns_ok_response()
             {
                 Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             }
@@ -135,7 +135,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             private HttpResponseMessage res;
 
             [SetUp]
-            internal async Task Setup()
+            public async Task Setup()
             {
                 var bankResponseMessage = new HttpResponseMessageBuilder().WithHttpStatusCode(HttpStatusCode.BadRequest).Build();
                 stubbedResponses["/api/ProcessPayment"] = bankResponseMessage;
