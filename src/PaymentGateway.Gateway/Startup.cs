@@ -6,12 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PaymentGateway.Gateway.Controllers.v1;
 using PaymentGateway.Gateway.DataAccess;
 using PaymentGateway.Gateway.Factories;
 using PaymentGateway.Gateway.Services;
 using Serilog;
 using System;
+using System.Collections.Generic;
 
 namespace PaymentGateway.Gateway
 {
@@ -45,34 +45,62 @@ namespace PaymentGateway.Gateway
             });
             if (currentEnvironment.IsDevelopment())
             {
-                services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentGateway", Version = "v1" });
-                });
+                ConfigureSwagger(services);
             }
-            services.AddAuthentication("Bearer")
-            .AddJwtBearer("Bearer", options =>
-            {
-                options.Authority = "http://localhost:53099";
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false
-                };
-            });
-                    services.AddAuthorization(options =>
-                    {
-                        options.AddPolicy("ProcessPayment", policy =>
-                        {
-                            policy.RequireAuthenticatedUser();
-                            policy.RequireClaim("scope", "ProcessPayment");
-                        });
-                        options.AddPolicy("GetPayment", policy =>
-                        {
-                            policy.RequireAuthenticatedUser();
-                            policy.RequireClaim("scope", "GetPayment");
-                        });
-                    });
             ConfigureLogging();
+            ConfigureAuth(services);
+        }
+
+        protected void ConfigureSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentGateway", Version = "v1" });
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {                            
+                            AuthorizationUrl = new Uri("https://localhost:44392/connect/authorize"),
+                            TokenUrl = new Uri("https://localhost:44392/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "ProcessPayment", "Process Payment" },
+                                { "GetPayment", "Get Payment" }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        protected virtual void ConfigureAuth(IServiceCollection services)
+        {
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:44392";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    options.RequireHttpsMetadata = false;
+                });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ProcessPayment", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "ProcessPayment");
+                });
+                options.AddPolicy("GetPayment", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "GetPayment");
+                });
+            });
         }
         private void ConfigureLogging()
         {
@@ -102,7 +130,7 @@ namespace PaymentGateway.Gateway
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers()
+                endpoints.MapControllers();
             });
         }
     }
