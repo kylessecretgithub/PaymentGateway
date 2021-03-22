@@ -12,14 +12,9 @@ Given a PaymentRequestModel, this route will process a payment to a bank and att
 Given a paymentId, this route will return the payment found matching the given ID.
 
 ## Running Instructions
-This application is available for testing locally using visual studio and swagger. 
-  1. Open the .sln file in visual studio (visual studio 2019 tested) and navigate to the top and hit the start button. 
-  2. To the left of the start button it should display Multiple Startup Projects. 
-  3. If it doesn't, right click the .sln from within Visual Studio. 
-  4. Select properties and then configure the projects: PaymentGateway.FakeBankApi and PaymentGateway.Gateway to have start in the action drop down. 
-  5. Hit apply and ok.
-
-Once the start button has been clicked two windows should launch. One should be running swagger which will allow you to interact with the two API routes.
+This application is available for testing locally using powershell and swagger. 
+  1. Run the LocalTestingRunner.ps1 script using powershell 
+  2. Navigate towards https://localhost:5001/index.html and use swagger to interact with the API 
 
 The fake bank api has been programmed to respond with certain responses to enable testing. The behaviours are configured by switching the amount property in the payment request.
 Behaviours:
