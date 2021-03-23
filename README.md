@@ -12,9 +12,10 @@ Given a PaymentRequestModel, this route will process a payment to a bank and att
 Given a paymentId, this route will return the payment found matching the given ID.
 
 ## Running Instructions
-This application is available for testing locally using powershell and swagger. 
+
+Please ensure you have powershell and the .NET CLI installed. This application is available for testing locally using powershell and swagger. 
   1. Run the LocalTestingRunner.ps1 script using powershell 
-  2. Navigate towards https://localhost:5001/index.html and use swagger to interact with the API 
+  2. Navigate towards https://localhost:5001/index.html in your browser of choice and use swagger to interact with the API 
 
 The fake bank api has been programmed to respond with certain responses to enable testing. The behaviours are configured by switching the amount property in the payment request.
 Behaviours:
