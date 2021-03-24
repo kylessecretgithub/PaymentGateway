@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -8,6 +10,7 @@ using PaymentGateway.Gateway.Services;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,13 +33,18 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
 
             var webApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(
                 builder => builder.ConfigureTestServices(
-                    services => services.AddScoped(s => new BankFacade(httpClient))
+                    services => 
+                    {
+                        services.AddScoped(s => new BankFacade(httpClient));
+                        services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                    }
                 ));
 
             testingClient = webApplicationFactory.CreateClient();
+            testingClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
         }
 
-
+        [TestFixture]
         internal class Post_ProcessPayment_ModelValidation : PaymentControllerIntegrationTests
         {            
             [Test]
@@ -110,6 +118,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
         }
 
+        [TestFixture]
         internal class Post_ProcessPayment_TestProcessesToBankAndSaves : PaymentControllerIntegrationTests
         {           
             private HttpResponseMessage res;
@@ -130,6 +139,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
         }
 
+        [TestFixture]
         internal class Post_ProcessPayment_TestFailsToProcessToBankAndSaves : PaymentControllerIntegrationTests
         {
             private HttpResponseMessage res;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -29,8 +30,11 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             var httpClient = new HttpClientBuilder().WithMessageHandler(new StubHttpMessageHandler(stubbedResponses)).Build();
 
             webApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(
-                builder => builder.ConfigureTestServices(
-                    services => services.AddScoped(s => new BankFacade(httpClient))                    
+                builder => builder.ConfigureTestServices(services =>
+                   {
+                       services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                       services.AddScoped(s => new BankFacade(httpClient));
+                   }
                 ));
             using IServiceScope scope = webApplicationFactory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<PaymentGatewayContext>();
@@ -41,25 +45,26 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
         }
 
         [TearDown]
-        internal async Task BaseTearDown()
+        public async Task BaseTearDown()
         {
             using IServiceScope scope = webApplicationFactory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<PaymentGatewayContext>();
             await dbContext.Database.EnsureDeletedAsync();
         }
 
+        [TestFixture]
         internal class Get_GetPayment_ModelValidation : ReportingControllerIntegrationTests
         {
             [Test]
             public async Task PaymentId_is_requiredAsync()
             {
-                var jsonRequest = new PaymentRequestBuilder().WithCVV(null).BuildJson();
                 var res = await testingClient.GetAsync("api/v1/Reporting/GetPayment/");
 
                 Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             }
         }
 
+        [TestFixture]
         internal class Get_GetPayment_PaymentRetrievedFromDatabase : ReportingControllerIntegrationTests
         {
             [Test]
@@ -94,6 +99,7 @@ namespace PaymentGateway.Gateway.IntegrationTests.v1
             }
         }
 
+        [TestFixture]
         internal class Get_GetPayment_PaymentNotFoundInDatabase : ReportingControllerIntegrationTests
         {
             [Test]
