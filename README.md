@@ -16,6 +16,7 @@ Given a paymentId, this route will return the payment found matching the given I
 Please ensure you have powershell and the .NET CLI installed. This application is available for testing locally using powershell and swagger. 
   1. Run the LocalTestingRunner.ps1 script using powershell 
   2. Navigate towards https://localhost:5001/index.html in your browser of choice and use swagger to interact with the API 
+  3. Authenticate yourself with the required scope by clicking on the lockpad at the top right of the screen and use Merchant for client id and secret for the secret.
 
 The fake bank api has been programmed to respond with certain responses to enable testing. The behaviours are configured by switching the amount property in the payment request.
 Behaviours:
@@ -53,7 +54,9 @@ If I were to put this code into production I would separate out the fake bank in
 
 - **Identity**
 
-I attempted to set up auth for the application using an identity server. This work was attempted on the AddIdentityServer branch and can be viewed on the repo. While I did manage to get the routes locked down with separate scopes, the inclusion of having authorisation broke my swagger code and my integration tests. On the branch there is a Runner folder containing a console app in the root folder to showcase the requesting of a bearer token from the server and using that token to authenticate with the paymentgateway API. This was my first time setting up Identity server and unfortunately time constraints meant I had to leave this feature unfinished. With the exclusion of this feature the app remains unsecure. Without this feature it is currently possible to query the get route with random IDs and get payment information you shouldn’t have access to. I was going to implement further filtering on the repository, using merchant ID as well as payment ID, but without the inclusion of identity it felt like a hollow measure.
+I attempted to set up auth for the application using an identity server. This work was attempted on the AddIdentityServer branch and can be viewed on the repo. While I did manage to get the routes locked down with separate scopes, the inclusion of having authorisation broke my swagger code and my integration tests. On the branch there is a Runner folder containing a console app in the root folder to showcase the requesting of a bearer token from the server and using that token to authenticate with the paymentgateway API. This was my first time setting up Identity server and unfortunately time constraints meant I had to leave this feature unfinished. With the exclusion of this feature the app remains unsecure. Without this feature it is currently possible to query the get route with random IDs and get payment information you shouldn’t have access to. I was going to implement further filtering on the repository, using merchant ID as well as payment ID, but without the inclusion of identity it felt like a hollow measure. 
+
+**UPDATE 24/03/2021** I managed to get identity working. This was technically after the hand in date, but I didnt like the idea of having unfinished coded and took it as a learning opportunity to get the identity server working in this solution. The running instructions have been updated to reflect authenticating.
 
 - **Code architecture**
 
