@@ -23,6 +23,7 @@ namespace PaymentGateway.Identity
                     {
                         new Secret("secret".Sha256())
                     },
+                    AllowedCorsOrigins = new List<string>{ "http://localhost:62609", "https://localhost:5001", "https://localhost:44306", "http://localhost:5000" },
                     AllowedScopes = { "ProcessPayment", "GetPayment" }
                 }
             };

@@ -55,8 +55,8 @@ namespace PaymentGateway.Gateway
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows
                     {
-                        AuthorizationCode = new OpenApiOAuthFlow
-                        {                            
+                        ClientCredentials = new OpenApiOAuthFlow
+                        {
                             AuthorizationUrl = new Uri("https://localhost:44392/connect/authorize"),
                             TokenUrl = new Uri("https://localhost:44392/connect/token"),
                             Scopes = new Dictionary<string, string>
