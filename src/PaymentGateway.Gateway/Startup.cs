@@ -53,6 +53,8 @@ namespace PaymentGateway.Gateway
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.OAuth2,
+                    In = ParameterLocation.Header,
+                    BearerFormat = "JWT",
                     Flows = new OpenApiOAuthFlows
                     {
                         ClientCredentials = new OpenApiOAuthFlow
@@ -61,10 +63,20 @@ namespace PaymentGateway.Gateway
                             TokenUrl = new Uri("https://localhost:44392/connect/token"),
                             Scopes = new Dictionary<string, string>
                             {
-                                { "ProcessPayment", "Process Payment" },
-                                { "GetPayment", "Get Payment" }
+                                { "ProcessPayment", "ProcessPayment" },
+                                { "GetPayment", "GetPayment" }
                             }
                         }
+                    }
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                        },
+                        new string[0] 
                     }
                 });
             });
