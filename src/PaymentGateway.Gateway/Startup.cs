@@ -65,8 +65,8 @@ namespace PaymentGateway.Gateway
                     {
                         ClientCredentials = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri("https://localhost:44392/connect/authorize"),
-                            TokenUrl = new Uri("https://localhost:44392/connect/token"),
+                            AuthorizationUrl = new Uri($"{Configuration.GetConnectionString("IdentityServerConnectionString")}/connect/authorize"),
+                            TokenUrl = new Uri($"{Configuration.GetConnectionString("IdentityServerConnectionString")}/connect/token"),
                             Scopes = new Dictionary<string, string>
                             {
                                 { "ProcessPayment", "ProcessPayment" },
@@ -93,7 +93,7 @@ namespace PaymentGateway.Gateway
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:44392";
+                    options.Authority = Configuration.GetConnectionString("IdentityServerConnectionString");
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
